@@ -2,6 +2,8 @@
 
 <head>
 
+<link rel="stylesheet" type="text/css" href="style.css"/>
+
 <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@200&display=swap" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
@@ -14,146 +16,54 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400&display=swap" rel="stylesheet">
 
-<style>
-
-#title
-{
-  text-align: center;
-}
-
-#game
-{
-  margin: auto;
-  background: lightblue;
-  width: 600px;
-  height: 250px;
-}
-
-#stage
-{
-  width: 500px;
-  height: 100px;
-  background-color: purple;
-  margin-left:8%;
-}
-
-#menuScreen
-{
-  margin-left:23%;
-  margin-bottom:5%;
-}
-
-button
-{
-  font-size: 24px;
-  font-weight:7900;
-}
-
-h2
-{
-  margin:auto;
-  width:195px;
-  margin-bottom:13px;
-}
-
-textarea
-{
-  margin-bottom:15px;
-}
-
-#app
-{
-  margin:auto;
-  width:56%;
-  background: lightblue;
-}
-
-.countContainer
-{
-  display:flex;
-  margin-left: auto;
-  width: 100%;
-}
-
-.countContainer span
-{
-  
-}
-
-p.letters,#letterCount,#wordCount
-{
-  margin-top:10px;
-  font-weight:700;
-  font-family: 'Source Sans Pro', sans-serif;
-  font-size: 22px;
-}
-
-#letterCount
-{
-  
-}
-
-.counts
-{
-  background:pink;
-  width:400px;
-}
-
-.radioContainer
-{
-  display:flex;
-  flex-direction:row;
-}
-
-#sort div
-{
-  margin-left:3%;
-}
-
-</style>
-
 <body>
 
 <title> Letter Finder </title>
 
 <div ng-app = "words" id = "app">
-
   <div class = "container">
-
-    <h2> Text Counter </h2>
+    <h2> Text Stats  </h2>
       <div ng-controller = "textCount">
-        <textarea id = "textField" ng-model = "texts" ng-change = "recount()" class = "form-control" rows="5">
+        <textarea id = "textField" autofocus ng-model = "texts" ng-change = "recount()" class = "form-control" rows="5">
         </textarea>
 
 
 <form>
       <div id = "sort">
-         
-
         <div class = "radioContainer">
-          <span> Sort by: </span>
+          <span class = "text"> Sort by: </span>
           <div class="form-check" ng-repeat = "i in sortType">
             <input ng-model = "sorting" class="sortRadio form-check-input" value = {{i.sort}}  ng-click= "sortBy(i.sort)" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-            <label class="form-check-label" for="flexRadioDefault1">
+            <label class="text form-check-label" for="flexRadioDefault1">
               {{i.name}}  
             </label>
               </div>
             </div>     
         </div>
+</form>    
+<input class = "searchbar" placeholder = "Search letter or count" ng-model = "charSearchbar"/>
+<input class = "searchbar" placeholder = "Search word or count" ng-model = "wordSearchbar"/>
 
         <div class = "countContainer">
-          <span id = "letterCount" class = "counts"> Letter Count: {{letterCount}}
-          <p class = "letters" ng-repeat = "i in letters | orderBy:sorting"> {{i.name|uppercase}} - {{i.count}} ({{(i.count/altLetterCount*100).toFixed(2)}}%)</p></span>
-          <span id = "wordCount" class = "counts"> Word Count: {{wordCount}} 
-          <p class = "words" ng-repeat = "i in words"> {{i}}:{{i.count}} </p>
-          </span> 
-          <!-- <span id = "sentenceCount" class = "counts"> Sentence Count: {{sentenceCount}} </span> -->
-        </div>
-      </div>
-  </div>
-</div>
+          <div id = "countWhole">
+            <span id = "letterCount" class = "counts"> Letter Count: {{letterCount}} </span>
+            <span id = "wordCount" class = "counts"> Word Count: {{wordCount}} </span>
+          </div>
 
-</form>
+        <div id = "countElements">
+          <div id = "lettersCount">
+            <p class = "letters" ng-repeat = "i in letters | orderBy:sorting | filter:charSearchbar"> {{i.name|uppercase}} - {{i.count}} ({{(i.count/altLetterCount*100).toFixed(2)}}%)</p>
+          </div>
+          <div id = "wordsCount">
+            <p class = "" ng-repeat = "i in words | orderBy:sorting | filter:wordSearchbar track by $index"> <span class = "words"> {{i.name}}  </span> - {{i.count}}</p>
+          </div>    
+        </div> <!-- countElements -->
+
+      </div> <!-- countContainer -->
+  </div> <!-- sort -->
+</div> <!-- app -->
+
+
 
 </body>
 
@@ -168,49 +78,92 @@ function($scope)
   $scope.altLetterCount = 1;
   $scope.letterCount = 0;
   $scope.wordCount = 0;
+  $scope.words = [];
  
   $scope.sortBy = function(category)
   {
-    // alert($scope.category)
     $scope.sorting = category;
   }
 
-  /*$scope.eachWordCount = function(text)
+  $scope.setWordCount = function(text)
   {
-    $scope.arr = [];
-    $scope.fullArr = [];
-    $scope.text;
+    $scope.wordArr = [];
+    $scope.word;
+    $scope.allIndex;
+    $scope.newWord = true;
+    $scope.count;
     $scope.index;
+    var letterIndex;
 
+    // common non chars after letter
+    var commonNonChar = ["!",",",".","?","(",")","&","-","_",";"];
+
+    text = text.replace("\n"," ");
+
+    if (!text.length == 0)
+    {
+      text = text.concat(" ");
+    }
+   
+
+    console.log(text)
+    // group text together
     for (var i = 0; i < text.length; i++)
     {
-      if (text[i] != " ")
+      if (text[i] != " " && $scope.newWord)
       {
-        $scope.arr.push(text[i]);
+        $scope.word = text[i];
+        $scope.newWord = false;
+      }
+
+      else if (text[i] != " " && !$scope.newWord)
+      {
+        $scope.word = $scope.word.concat(text[i]);
       }
 
       else if (text[i] == " ")
       {
-        $scope.text = $scope.arr.push.toString("");
-        $scope.fullArr.push($scope.text);
-        $scope.arr = [];
+        for (var y = 0; y < $scope.word.length; y++)
+        {
+          letterIndex = commonNonChar.indexOf($scope.word[y]);
+
+          if (letterIndex != -1)
+          {
+            $scope.word = $scope.word.replace($scope.word[y],"")
+          }
+        }
+
+        $scope.wordArr.push($scope.word);
+        $scope.word = "";
+        $scope.newWord = true;
       }
     }
 
-    for (var j = 0; j < $scope.fullArr.length; j++)
-    {
-      $scope.index = $scope.fullArr[j].indexOf($scope.fullArr);
+    console.log($scope.wordArr)
 
-      if ($scope.index != -1 && scopeIndex != j)
+    $scope.words.length = 0;
+
+    for (var j = 0; j < $scope.wordArr.length; j++)
+    {
+      $scope.index = $scope.wordArr.indexOf($scope.wordArr[j]);
+      
+      if ($scope.index == j)
       {
-        $scope.count++;
+        $scope.allIndex = $scope.allIndexOf($scope.wordArr,$scope.wordArr[j]);
+        $scope.count = $scope.allIndex.length;
+
+        for (var x = $scope.allIndex.length-1; x > 0; x--)
+        {
+          $scope.wordArr.splice($scope.allIndex[x],1);
+        }
+
+        $scope.words[j] = {};
+        $scope.words[j]["name"] = $scope.wordArr[j]; 
+        $scope.words[j]["count"] = $scope.count; 
       }
     }
   }
 
-  // $scope.words = = {};
-*/
-  
   $scope.recount = function()
   {
     //update letter count
@@ -225,15 +178,15 @@ function($scope)
     {
       $scope.altLetterCount = $scope.letterCount;
     }
+
+    // update each letter counts
+    $scope.setLettersCount($scope.texts,$scope);
    
     // update word count
     $scope.wordCount = $scope.getWordCount($scope.texts);
 
-    // update each letter counts
-    $scope.setLettersCount($scope.texts,$scope);
-
     // update each word counts
-    $scope.setWordsCount($scope.texts,$scope)
+    $scope.setWordCount($scope.texts,$scope);
 
     // update sentence count (future)
     //$scope.sentenceCount = ;
@@ -241,15 +194,30 @@ function($scope)
     // update paragraph count (future)
   }
 
+  function decodeEntities(html) 
+  {
+    var txt = document.createElement("textarea");
+    txt.innerHTML = html;
+    return txt.value;
+  }
+
   $scope.letters = [{"name":"a",count:0},{"name":"b",count:0},{"name":"c",count:0},{"name":"d",count:0},{"name":"e",count:0},{"name":"f",count:0},{"name":"g",count:0},{"name":"h",count:0},{"name":"i",count:0},{"name":"j",count:0},{"name":"k",count:0},{"name":"l",count:0},{"name":"m",count:0},{"name":"n",count:0},{"name":"o",count:0},{"name":"p",count:0},{"name":"q",count:0},{"name":"r",count:0},{"name":"s",count:0},{"name":"t",count:0},{"name":"u",count:0},{"name":"v",count:0},{"name":"w",count:0},{"name":"x",count:0},{"name":"y",count:0},{"name":"z",count:0}];
 
-  $scope.sortType = [{"name":"Alphabetical&#8593","sort":"name"},{"name":"Alphabetical &#8595","sort":"-name"},{"name":"Most common","sort":"count"},{"name":"Least common","sort":"-count"}];
+  var upArrow = "Alphabetical " + decodeEntities('&#8593');
+  var downArrow = "Alphabetical " + decodeEntities('&#8595');
+  $scope.sortType = [{"name":upArrow,"sort":"name"},{"name":downArrow,"sort":"-name"},{"name":"Most common","sort":"-count"},{"name":"Least common","sort":"count"}];
 
   $scope.getWordCount = function(text)
   {
+    if (text.length == 0)
+    {
+      return 0;
+    }
+
     var textBeforeWhitespace = false; 
     var numWords = 0;
- 
+
+
     for (var i = 0; i < text.length; i++) 
     {
       var currentCharacter = text[i];
@@ -296,7 +264,21 @@ function($scope)
         }
       }  
     }
-  } 
+  }
+
+  $scope.allIndexOf = function(arr,val)
+  {
+    var indices = [];
+
+    for (var i = 0; i < arr.length; i++)
+    {
+      if (arr[i] == val)
+      {
+        indices.push(i);
+      }
+    }
+      return indices;
+  }
 });
 
 

@@ -1,0 +1,147 @@
+body
+{
+ overflow-y: hidden;
+}
+
+#title
+{
+  text-align:center;
+}
+
+#menuScreen
+{
+  margin-left:23%;
+  margin-bottom:5%;
+}
+
+button
+{
+  font-size: 24px;
+  font-weight:7900;
+}
+
+h2
+{
+  margin:auto;
+  width:195px;
+  margin-bottom:13px;
+}
+
+textarea
+{
+  margin-bottom:15px;
+}
+
+#app
+{
+  margin:auto;
+  width:56%;
+  background:lightblue;
+}
+
+.countContainer
+{  
+
+}
+
+#countElements
+{
+  display:flex;
+}
+
+#countWhole span
+{
+  width:550px;
+  background-color: pink;
+  margin-right:25.5%;
+}
+
+#countElements div
+{
+ margin-right:21.2%;
+}
+
+#countElements div p 
+{
+  width:200px;
+  background-color:pink;
+}
+
+#countWhole
+{
+  width:120%;
+}
+
+
+#wordCount
+{
+  background-color: blue;
+}
+
+p.letters,#letterCount,#wordCount,span.words
+{
+  margin-top:10px;
+  font-weight:700;
+  font-family:'Source Sans Pro', sans-serif;
+  font-size: 22px;
+}
+
+span.words
+{
+  overflow-x:scroll;
+  width:250px;
+}
+
+#letterCount
+{
+  
+}
+
+.counts
+{
+  width:400px;
+}
+
+.radioContainer
+{
+  display:flex;
+  flex-direction:row;
+  margin-top:1%;
+}
+
+#sort
+{
+  margin-bottom:2%;
+}
+
+#sort div
+{
+  font-family:'Source Sans Pro', sans-serif;
+  margin-left:3%;
+}
+
+.searchbar
+{
+  margin-left:0%;
+  margin-right:24%;
+  margin-bottom:1%;
+  border:2px gray ridge;
+  border-radius:3px;
+  background-color:#e0e0de;
+}
+
+#lettersCount,#wordsCount
+{
+  overflow-y:auto;
+  height:580px;
+}
+
+#wordsCount
+{
+
+}
+
+@media screen and (max-width: 955px)
+{
+  
+}
