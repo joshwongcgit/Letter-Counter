@@ -36,7 +36,12 @@ textarea
 {
   margin:auto;
   width:770px;
+  margin-top:15px;
   background:lightblue;
+  border: 3px #33bbd6 ridge;
+  box-shadow: -1px 2px 21px 3px rgba(96,250,248,0.75);
+ -webkit-box-shadow: -1px 2px 21px 3px rgba(96,250,248,0.75);
+  -moz-box-shadow: -1px 2px 21px 3px rgba(96,250,248,0.75);
 }
 
 .countContainer
